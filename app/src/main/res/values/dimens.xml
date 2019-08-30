@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="box_inset_layout_padding">0dp</dimen>
+    <dimen name="inner_frame_layout_padding">5dp</dimen>
+    <dimen name="bpm_value">30sp</dimen>
+    <dimen name="bpm_text">17sp</dimen>
+    <dimen name="start_text">20sp</dimen>
+</resources>

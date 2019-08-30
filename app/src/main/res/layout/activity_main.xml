@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.wear.widget.drawer.WearableDrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.wear.widget.BoxInsetLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/container"
+        android:background="@color/blue"
+        android:padding="@dimen/box_inset_layout_padding"
+        tools:context="roberta.heartbeep.activities.MainActivity"
+        tools:deviceIds="wear">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/gif"/>
+
+        <androidx.wear.widget.SwipeDismissFrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="@dimen/inner_frame_layout_padding"
+            app:boxedEdges="all">
+
+            <TextView
+                android:layout_marginTop="5dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/bpm_text"
+                android:text="@string/heartbeep" />
+
+            <LinearLayout
+                android:id="@+id/measure_container"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textStyle="bold"
+                    android:id="@+id/heart_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/bpm_value"
+                    android:text="0 " />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/bpm_text"
+                    android:text="@string/bpm" />
+
+            </LinearLayout>
+
+        </androidx.wear.widget.SwipeDismissFrameLayout>
+
+        <LinearLayout
+            android:id="@+id/start_button"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:clickable="true"
+            android:gravity="center"
+            android:background="@color/dark_blue"
+            android:fitsSystemWindows="true"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="60dp">
+
+            <ImageButton
+                android:id="@+id/start_icon"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:scaleType="fitXY"
+                />
+
+            <TextView
+                android:textSize="@dimen/start_text"
+                android:id="@+id/start_text"
+                android:layout_marginLeft="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/start"
+                />
+
+        </LinearLayout>
+
+    </androidx.wear.widget.BoxInsetLayout>
+
+    <androidx.wear.widget.drawer.WearableNavigationDrawerView
+        android:id="@+id/top_navigation_drawer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</androidx.wear.widget.drawer.WearableDrawerLayout>
