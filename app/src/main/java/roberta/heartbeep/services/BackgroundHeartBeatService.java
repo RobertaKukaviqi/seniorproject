@@ -17,29 +17,20 @@ import android.os.IBinder;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.app.NotificationCompat.WearableExtender;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.messaging.FirebaseMessaging;
-import com.google.firebase.messaging.RemoteMessage;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 
-import java.util.Calendar;
-import java.util.Objects;
 import java.util.Random;
 
-import okhttp3.internal.Util;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import roberta.heartbeep.R;
 import roberta.heartbeep.Utilities.Constants;
-import roberta.heartbeep.Utilities.Helper;
+import roberta.heartbeep.repositories.StorageRepository;
 import roberta.heartbeep.Utilities.Utils;
 import roberta.heartbeep.activities.NotificationActivity;
 import roberta.heartbeep.models.Notification;
@@ -67,7 +58,7 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
                 stopMeasure();
                 stopSelf();
             }
-        }, 8000);
+        }, 10000);
 
     }
 
@@ -111,7 +102,7 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
         float mHeartRateFloat = sensorEvent.values[0];
         int mHeartRate = Math.round(mHeartRateFloat);
 
-        Helper.getInstance().setHeartRateValue(this, mHeartRate);
+        StorageRepository.getInstance().setHeartRateValue(this, mHeartRate);
         if(mHeartRate != 0 && mHeartRate < 50){
             //handle low blood pressure
             startAlertActivity(mHeartRate);
@@ -137,7 +128,7 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
     private void sendDataToCloud(int mHeartRate) {
         FirebaseDatabase.getInstance().getReference("users")
                 .child("wear")
-                .child(Helper.getInstance().getUserToken(this))
+                .child(StorageRepository.getInstance().getUserToken(this))
                 .child("data")
                 .child(Utils.getCurrentWeekStart().toString())
                 .child(LocalDate.now().toString())
@@ -154,16 +145,16 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
     private void broadcastNotification(boolean lowBlood){
         String notificationText;
 
-        String userName = Helper.getInstance().getUserName(this);
+        String userName = StorageRepository.getInstance().getUserName(this);
         if(lowBlood)
             notificationText = Utils.getCurrentTime() + " - " + userName + getResources().getString(R.string.low_blood);
         else
             notificationText = Utils.getCurrentTime() + " - " + userName + getResources().getString(R.string.high_blood);
 
         NotificationRequest notificationRequest = new NotificationRequest(
-                "/topics/" + Helper.getInstance().getUserToken(this),
+                "/topics/" + StorageRepository.getInstance().getUserToken(this),
                 new NotificationData("Notification"),
-                new Notification("HeartBeep", notificationText)
+                new Notification("HeartRate", notificationText)
         );
         NetworkInterface networkInterface = RetrofitHelper.getInstance().create(NetworkInterface.class);
         Call<String> call = networkInterface.sendNotification(notificationRequest);
@@ -182,7 +173,7 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
 
     private void createNotification(boolean lowBlood, int heartRate){
         int notificationId = new Random().nextInt(10000);
-        String id = "heartbeep_channel";
+        String id = "heart_rate_channel";
         Intent viewIntent = new Intent(this, NotificationActivity.class);
         viewIntent.putExtra(Constants.NOT_ID, notificationId);
         viewIntent.putExtra(Constants.NOT_HEART_RATE, heartRate);
@@ -191,7 +182,7 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
         NotificationCompat.Builder notificationBuilder =
                 new NotificationCompat.Builder(this, id)
                         .setSmallIcon(R.drawable.heart_icon)
-                        .setContentTitle("HeartBeep")
+                        .setContentTitle("HeartRate")
                         .setContentIntent(viewPendingIntent);
 
         if(lowBlood){
@@ -206,7 +197,7 @@ public class BackgroundHeartBeatService extends Service implements SensorEventLi
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(
                     id,
-                    "HeartBeep",
+                    "HeartRate",
                     NotificationManager.IMPORTANCE_DEFAULT);
             notificationManager.createNotificationChannel(channel);
             notificationBuilder.setChannelId(id);

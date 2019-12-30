@@ -1,11 +1,14 @@
-package roberta.heartbeep.Utilities;
+package roberta.heartbeep.repositories;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-public class Helper {
 
-    public static Helper getInstance(){
-        return new Helper();
+import roberta.heartbeep.Utilities.Constants;
+
+public class StorageRepository {
+
+    public static StorageRepository getInstance(){
+        return new StorageRepository();
     }
 
     private SharedPreferences getSharedPres(Context context){

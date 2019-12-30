@@ -18,7 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.util.Objects;
 
 import roberta.heartbeep.R;
-import roberta.heartbeep.Utilities.Helper;
+import roberta.heartbeep.repositories.StorageRepository;
 
 public class LoginActivity extends WearableActivity {
 
@@ -74,8 +74,8 @@ public class LoginActivity extends WearableActivity {
 
     private void saveUserToken(GoogleSignInAccount account) {
         if(account != null) {
-            Helper.getInstance().saveUserToken(this, account.getId());
-            Helper.getInstance().saveUserName(this, account.getDisplayName());
+            StorageRepository.getInstance().saveUserToken(this, account.getId());
+            StorageRepository.getInstance().saveUserName(this, account.getDisplayName());
 
             FirebaseDatabase.getInstance().getReference("users")
                     .child("wear")
@@ -94,7 +94,7 @@ public class LoginActivity extends WearableActivity {
     }
 
     private void updateUI(){
-        String userToken = Helper.getInstance().getUserToken(this);
+        String userToken = StorageRepository.getInstance().getUserToken(this);
         Log.e("UserToken"," " + userToken);
         if(!userToken.equals("")) {
             Intent intent = new Intent(this, MainActivity.class);

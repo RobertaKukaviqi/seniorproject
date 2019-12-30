@@ -1,4 +1,4 @@
-package roberta.heartbeep.adapters;
+package roberta.heartbeep;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,8 +10,7 @@ import androidx.wear.widget.drawer.WearableNavigationDrawerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-import roberta.heartbeep.R;
-import roberta.heartbeep.repositories.StorageRepository;
+import roberta.heartbeep.Utilities.Helper;
 import roberta.heartbeep.activities.LoginActivity;
 import roberta.heartbeep.models.DrawerItem;
 
@@ -45,7 +44,7 @@ public class DrawerAdapter extends WearableNavigationDrawerView.WearableNavigati
         switch (pos){
             case 0:
                 FirebaseAuth.getInstance().signOut();
-                StorageRepository.getInstance().saveUserToken(context, "");
+                Helper.getInstance().saveUserToken(context, "");
                 Intent intent = new Intent(context, LoginActivity.class);
                 context.startActivity(intent);
                 ((Activity)context).finish();

@@ -7,7 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
 
-import roberta.heartbeep.Utilities.Helper;
+import roberta.heartbeep.repositories.StorageRepository;
 import roberta.heartbeep.services.BackgroundHeartBeatService;
 
 public class AlarmBroadcastReceiver extends BroadcastReceiver {
@@ -19,19 +19,19 @@ public class AlarmBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if(!Helper.getInstance().shouldStopMeasuring(context)) {
+        if(!StorageRepository.getInstance().shouldStopMeasuring(context)) {
             intent = new Intent(context, AlarmBroadcastReceiver.class);
             PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 2121, intent, 0);
 
             //repeat alarm
-            long futureInMillis = SystemClock.elapsedRealtime() + 180000;
+            long futureInMillis = SystemClock.elapsedRealtime() + 30000;
             AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, futureInMillis, alarmIntent);
 
             intent = new Intent(context, BackgroundHeartBeatService.class);
             context.startService(intent);
         }else{
-            Helper.getInstance().stopMeasuring(context, false);
+            StorageRepository.getInstance().stopMeasuring(context, false);
         }
     }
 

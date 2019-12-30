@@ -42,7 +42,7 @@ import java.util.Map;
 import roberta.heartbeep.adapters.DrawerAdapter;
 import roberta.heartbeep.R;
 import roberta.heartbeep.Utilities.Constants;
-import roberta.heartbeep.Utilities.Helper;
+import roberta.heartbeep.repositories.StorageRepository;
 import roberta.heartbeep.receivers.AlarmBroadcastReceiver;
 import roberta.heartbeep.services.BackgroundHeartBeatService;
 
@@ -92,7 +92,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         LinearLayout startButton = findViewById(R.id.start_button);
         startButton.setOnClickListener(this);
 
-        if(Helper.getInstance().isStartButton(MainActivity.this)){
+        if(StorageRepository.getInstance().isStartButton(MainActivity.this)){
             ImageButton icon = findViewById(R.id.start_icon);
             TextView text = findViewById(R.id.start_text);
             icon.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.play_icon));
@@ -113,7 +113,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     private void checkConnectionRequests() {
         FirebaseDatabase.getInstance().getReference("users")
                 .child("wear")
-                .child(Helper.getInstance().getUserToken(this))
+                .child(StorageRepository.getInstance().getUserToken(this))
                 .child("requests")
                 .addValueEventListener(new ValueEventListener() {
                     @Override
@@ -121,7 +121,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                         Map<String, String> requests = (HashMap<String,String>) dataSnapshot.getValue();
                         if(requests != null && !requests.isEmpty())
                             for(Map.Entry<String, String>entry: requests.entrySet()){
-                                showConnectionResuestDialog(entry.getKey(), entry.getValue());
+                                showConnectionRequestDialog(entry.getKey(), entry.getValue());
                             }
                     }
 
@@ -132,8 +132,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
                 });
     }
 
-    private void showConnectionResuestDialog(final String userId, String userName) {
-        final String currentUserId = Helper.getInstance().getUserToken(MainActivity.this);
+    private void showConnectionRequestDialog(final String userId, String userName) {
+        final String currentUserId = StorageRepository.getInstance().getUserToken(MainActivity.this);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setTitle("Connection request")
@@ -191,7 +191,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     }
 
     private void startButtonClicked() {
-        if(Helper.getInstance().isStartButton(MainActivity.this)){
+        if(StorageRepository.getInstance().isStartButton(MainActivity.this)){
             setStartServiceButton();
         }else{
             setPauseServiceButton();
@@ -199,9 +199,9 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     }
 
     private void setPauseServiceButton() {
-        Helper.getInstance().stopMeasuring(MainActivity.this, true);
-        Helper.getInstance().setHeartRateValue(MainActivity.this, 0);
-        Helper.getInstance().startButton(MainActivity.this, true);
+        StorageRepository.getInstance().stopMeasuring(MainActivity.this, true);
+        StorageRepository.getInstance().setHeartRateValue(MainActivity.this, 0);
+        StorageRepository.getInstance().startButton(MainActivity.this, true);
         if(alarmManager != null && pendingIntent != null) {
             alarmManager.cancel(pendingIntent);
         }
@@ -221,8 +221,8 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
     }
 
     private void setStartServiceButton() {
-        Helper.getInstance().stopMeasuring(MainActivity.this, false);
-        Helper.getInstance().startButton(MainActivity.this, false);
+        StorageRepository.getInstance().stopMeasuring(MainActivity.this, false);
+        StorageRepository.getInstance().startButton(MainActivity.this, false);
         ImageButton icon = findViewById(R.id.start_icon);
         TextView text = findViewById(R.id.start_text);
         icon.setBackground(ContextCompat.getDrawable(MainActivity.this, R.drawable.pause_icon));
@@ -251,7 +251,7 @@ public class MainActivity extends WearableActivity implements View.OnClickListen
         registerReceiver(broadcastReceiver, filter);
 
         if (mTextView != null) {
-            mTextView.setText(Helper.getInstance().getHeartRateValue(MainActivity.this) + " ");
+            mTextView.setText(StorageRepository.getInstance().getHeartRateValue(MainActivity.this) + " ");
         }
     }
 

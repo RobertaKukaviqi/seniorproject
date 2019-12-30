@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">HeartBeep</string>
+    <string name="app_name">HeartRate</string>
     <string name="hello_world">Hello Square World!</string>
     <string name="title_activity_time">TimeActivity</string>
-    <string name="heartbeep">HeartBeep</string>
+    <string name="heartbeep">HeartRate</string>
     <string name="your_bpm_low">Your blood pressure is low!</string>
     <string name="low_blood">\'s blood pressure is low!</string>
     <string name="your_bpm_high">Your blood pressure is high!</string>
